@@ -331,7 +331,7 @@ public class AccessGroupService {
             monoMap.put(LegalEntityParticipant.ActionEnum.ADD, Mono.just(serviceAgreement));
             return Mono.just(monoMap);
         }
-        serviceAgreement.getParticipants().stream().forEach(p -> {
+        serviceAgreement.getParticipants().forEach(p -> {
             if (p.getAction() == null) {
                 p.setAction(LegalEntityParticipant.ActionEnum.ADD);
             }
@@ -409,7 +409,7 @@ public class AccessGroupService {
             })
             .collectList()
             .flatMap(resultList -> {
-                resultList.stream().forEach(r -> {
+                resultList.forEach(r -> {
                     if (r.getStatus() != HTTP_STATUS_OK) {
                         streamTask.error("participant", "update-participant", "failed", r.getResourceId(),
                             null, "Error updating Participant {} for Service Agreement: {}", r.getResourceId(),
@@ -1311,7 +1311,7 @@ public class AccessGroupService {
     private Mono<? extends JobRole> updateJobRole(StreamTask streamTask, ServiceAgreement serviceAgreement,
         JobRole jobRole, FunctionGroupItem functionGroupItem) {
 
-        log.warn("Start Job Role updating: {}", functionGroupItem);
+        log.debug("Start Job Role updating: {}", functionGroupItem);
         streamTask.info(JOB_ROLE, SETUP_JOB_ROLE, "update", serviceAgreement.getExternalId(), null,
             "Update job role: %s for service agreement: %s", jobRole.getName(), serviceAgreement.getName());
 
@@ -1354,7 +1354,7 @@ public class AccessGroupService {
         ServiceAgreement serviceAgreement,
         List<BusinessFunctionGroup> existingBusinessGroups) {
 
-        log.warn("Start Job Role updating: {}", existingBusinessGroups);
+        log.debug("Start Job Role updating: {}", existingBusinessGroups);
 
         streamTask.info(FUNCTION_GROUP, SETUP_FUNCTION_GROUP, "update", serviceAgreement.getExternalId(), null,
             "Update business function groups for service agreement: %s",
@@ -1428,15 +1428,15 @@ public class AccessGroupService {
     }
 
     private void handleError(WebClientResponseException badRequest) {
-        log.warn("Error executing request: [{}] {}", badRequest.getRawStatusCode(), badRequest.getResponseBodyAsString());
+        log.error("Error executing request: [{}] {}", badRequest.getRawStatusCode(), badRequest.getResponseBodyAsString());
     }
 
     private void handleError(BusinessFunctionGroup businessFunctionGroup, WebClientResponseException badRequest) {
-        log.warn("Failed to create function group: {} Response: {}", businessFunctionGroup, badRequest.getResponseBodyAsString());
+        log.error("Failed to create function group: {} Response: {}", businessFunctionGroup, badRequest.getResponseBodyAsString());
     }
 
     private void handleError(JobRole jobRole, WebClientResponseException badRequest) {
-        log.warn("Failed to create job role: {} Response: {}", jobRole, badRequest.getResponseBodyAsString());
+        log.error("Failed to create job role: {} Response: {}", jobRole, badRequest.getResponseBodyAsString());
     }
 
 }
