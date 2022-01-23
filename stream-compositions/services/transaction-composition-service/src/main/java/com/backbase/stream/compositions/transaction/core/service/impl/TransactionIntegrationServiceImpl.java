@@ -1,8 +1,10 @@
 package com.backbase.stream.compositions.transaction.core.service.impl;
 
 import com.backbase.stream.compositions.integration.transaction.api.TransactionIntegrationApi;
+import com.backbase.stream.compositions.integration.transaction.model.PullIngestionRequest;
 import com.backbase.stream.compositions.integration.transaction.model.PullTransactionsResponse;
 import com.backbase.stream.compositions.integration.transaction.model.TransactionsPostRequestBody;
+import com.backbase.stream.compositions.transaction.core.mapper.ProductGroupMapper;
 import com.backbase.stream.compositions.transaction.core.model.TransactionIngestPullRequest;
 import com.backbase.stream.compositions.transaction.core.service.TransactionIntegrationService;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import reactor.core.publisher.Flux;
 @AllArgsConstructor
 public class TransactionIntegrationServiceImpl implements TransactionIntegrationService {
     private final TransactionIntegrationApi transactionIntegrationApi;
+    private final ProductGroupMapper productGroupMapper;
 
     /**
      * {@inheritDoc}
@@ -22,8 +25,9 @@ public class TransactionIntegrationServiceImpl implements TransactionIntegration
     public Flux<TransactionsPostRequestBody> pullTransactions(TransactionIngestPullRequest ingestPullRequest) {
         return transactionIntegrationApi
                 .pullTransactions(
-                        ingestPullRequest.getExternalArrangementIds(),
-                        ingestPullRequest.getAdditionalParameters())
+                        new PullIngestionRequest()
+                                .userExternalId(ingestPullRequest.getUserExternalId())
+                                .productGroup(productGroupMapper.mapCompositionToIntegration(ingestPullRequest.getProductGroup())))
                 .flatMapIterable(PullTransactionsResponse::getTransactions);
     }
 }

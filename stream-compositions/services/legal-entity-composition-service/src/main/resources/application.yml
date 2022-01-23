@@ -45,7 +45,7 @@ backbase:
 
 bootstrap:
   enabled: true
-  # This is just na example. Replace it with data corresponding to   your bank
+  # This is just na example. Replace it with data corresponding to your bank
   legalEntity:
     name: "WSECU"
     realmName: "backbase"

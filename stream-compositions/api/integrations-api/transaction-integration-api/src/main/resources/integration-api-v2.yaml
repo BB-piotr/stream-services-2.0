@@ -9,24 +9,18 @@ tags:
   - name: TransactionIntegration
 paths:
   /integration-api/v2/transactions:
-    get:
+    post:
       tags:
         - TransactionIntegration
       summary: Pulls transactions.
       description: Pulls transactions.
       operationId: pullTransactions
-      parameters:
-        - in: query
-          name: externalArrangementIds
-          schema:
-            type: string
-          required: true
-        - in: query
-          name: additionalParameters
-          schema:
-            type: object
-            additionalProperties:
-              type: string
+      requestBody:
+        description: Push Ingestion Request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PullIngestionRequest'
 
       responses:
         "200":
@@ -58,6 +52,18 @@ components:
       properties:
         message:
           type: string
+
+    PullIngestionRequest:
+      type: object
+      properties:
+        userExternalId:
+          type: String
+        productGroup:
+          $ref: '../../../../../../../api/stream-legal-entity/openapi.yaml#/components/schemas/ProductGroup'
+        additionalParameters:
+          type: object
+          additionalProperties:
+            type: string
 
     PullTransactionsResponse:
       type: object

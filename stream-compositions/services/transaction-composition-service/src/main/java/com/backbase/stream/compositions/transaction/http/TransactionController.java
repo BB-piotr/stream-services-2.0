@@ -56,7 +56,8 @@ public class TransactionController implements TransactionCompositionApi {
     private TransactionIngestPullRequest buildPullRequest(PullIngestionRequest request) {
         return TransactionIngestPullRequest
                 .builder()
-                .externalArrangementIds(request.getExternalArrangementIds())
+                .userExternalId(request.getUserExternalId())
+                .productGroup(request.getProductGroup())
                 .additionalParameters(request.getAdditionalParameters())
                 .build();
     }

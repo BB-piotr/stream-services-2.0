@@ -49,7 +49,6 @@ public class TransactionIngestPullEventHandler implements EventHandler<Transacti
     private Mono<TransactionIngestPullRequest> buildRequest(TransactionsIngestPullEvent event) {
         return Mono.just(
                 TransactionIngestPullRequest.builder()
-                        .externalArrangementIds(event.getExternalArrangementIds())
                         .build());
     }
 

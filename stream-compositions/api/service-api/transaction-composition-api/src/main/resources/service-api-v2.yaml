@@ -86,11 +86,11 @@ components:
 
     PullIngestionRequest:
       type: object
-      required:
-        - externalArrangementIds
       properties:
-        externalArrangementIds:
-          type: string
+        userExternalId:
+          type: String
+        productGroup:
+          $ref: '../../../../../../../api/stream-legal-entity/openapi.yaml#/components/schemas/ProductGroup'
         additionalParameters:
           type: object
           additionalProperties:

@@ -115,7 +115,6 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
     @Override
     public Mono<LegalEntityTask> executeTask(@SpanTag(value = "streamTask") LegalEntityTask streamTask) {
         return upsertLegalEntity(streamTask)
-                .flatMap(this::deleteLegalEntityPermissions)
                 .flatMap(this::setupAdministrators)
                 .flatMap(this::setupUsers)
                 .flatMap(this::setupServiceAgreement)
@@ -200,6 +199,7 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
                     ServiceAgreement sa = data.getT1();
                     LegalEntity le = data.getT2();
                     List<String> userIds = data.getT3();
+
                     return accessGroupService.deleteFunctionGroupsForServiceAgreement(sa.getInternalId());
 
                 })
