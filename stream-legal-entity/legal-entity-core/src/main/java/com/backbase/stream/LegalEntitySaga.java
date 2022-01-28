@@ -181,31 +181,6 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
                 });
     }
 
-    private Mono<LegalEntityTask> deleteLegalEntityPermissions(LegalEntityTask streamTask) {
-        String legalEntityExternalId = streamTask.getData().getExternalId();
-
-        return Mono.zip(legalEntityService.getMasterServiceAgreementForExternalLegalEntityId(legalEntityExternalId), legalEntityService.getLegalEntityByExternalId(legalEntityExternalId)).flatMap(data -> {
-                    LegalEntity le = data.getT2();
-                    return userService.getUsersByLegalEntity(le.getInternalId()).map(usersByLegalEntityIdsResponse -> {
-                        List<GetUser> users = usersByLegalEntityIdsResponse.getUsers();
-                        return Tuples.of(data.getT1(), le, users);
-                    });
-                }).flatMap(data -> {
-                    ServiceAgreement sa = data.getT1();
-                    List<GetUser> users = data.getT3();
-                    return Flux.fromIterable(users).flatMap(user -> accessGroupService.removePermissionsForUser(sa.getInternalId(), user.getId()).thenReturn(user.getExternalId())).collectList().map(userIds -> Tuples.of(sa, data.getT2(), userIds));
-
-                }).flatMap(data -> {
-                    ServiceAgreement sa = data.getT1();
-                    LegalEntity le = data.getT2();
-                    List<String> userIds = data.getT3();
-
-                    return accessGroupService.deleteFunctionGroupsForServiceAgreement(sa.getInternalId());
-
-                })
-                .thenReturn(streamTask);
-    }
-
     private Mono<LegalEntityTask> upsertLegalEntity(LegalEntityTask task) {
         task.info(LEGAL_ENTITY, UPSERT, "", task.getData().getExternalId(), null, "Upsert Legal Entity with External ID: %s", task.getData().getExternalId());
         LegalEntity legalEntity = task.getData();

@@ -92,7 +92,6 @@ class LegalEntitySagaTest {
 
         LegalEntityTask task = mockLegalEntityTask(legalEntity);
 
-        when(legalEntityService.getMasterServiceAgreementForExternalLegalEntityId(eq(leExternalId))).thenReturn(Mono.just(serviceAgreement));
         when(legalEntityService.getLegalEntityByExternalId(eq(leExternalId))).thenReturn(Mono.empty());
         when(legalEntityService.createLegalEntity(any())).thenReturn(Mono.just(legalEntity));
         when(accessGroupService.getServiceAgreementByExternalId(eq(customSaExId))).thenReturn(Mono.empty());
@@ -138,10 +137,8 @@ class LegalEntitySagaTest {
         LegalEntity legalEntity = new LegalEntity().externalId(leExternalId).customServiceAgreement(customSa)
             .productGroups(Collections.singletonList(productGroup));
 
-        ServiceAgreement serviceAgreement = new ServiceAgreement();
         LegalEntityTask task = mockLegalEntityTask(legalEntity);
 
-        when(legalEntityService.getMasterServiceAgreementForExternalLegalEntityId(eq(leExternalId))).thenReturn(Mono.just(serviceAgreement));
         when(legalEntityService.getLegalEntityByExternalId(eq(leExternalId))).thenReturn(Mono.empty());
         when(legalEntityService.createLegalEntity(any())).thenReturn(Mono.just(legalEntity));
         when(accessGroupService.getServiceAgreementByExternalId(eq(customSaExId))).thenReturn(Mono.empty());
