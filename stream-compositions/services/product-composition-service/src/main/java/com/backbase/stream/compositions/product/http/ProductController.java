@@ -71,7 +71,7 @@ public class ProductController implements ProductCompositionApi {
      */
     private ProductIngestPushRequest buildPushRequest(PushIngestionRequest request) {
         return ProductIngestPushRequest.builder()
-                .productGroup(mapper.mapCompositionToStream(request.getProductGgroup()))
+                .productGroup(mapper.mapCompositionToStream(request.getProductGroup()))
                 .build();
     }
 
@@ -84,7 +84,7 @@ public class ProductController implements ProductCompositionApi {
     private ResponseEntity<IngestionResponse> mapIngestionToResponse(ProductIngestResponse response) {
         return new ResponseEntity<>(
                 new IngestionResponse()
-                        .withProductGgroup(mapper.mapStreamToComposition(response.getProductGroup())),
+                        .withProductGroup(mapper.mapStreamToComposition(response.getProductGroup())),
                 HttpStatus.CREATED);
     }
 }

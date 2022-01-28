@@ -57,14 +57,14 @@ class ProductControllerTest {
         ResponseEntity<IngestionResponse> responseEntity = controller.pullIngestProductGroup(requestMono, null).block();
         IngestionResponse ingestionResponse = responseEntity.getBody();
         assertNotNull(ingestionResponse);
-        assertNotNull(ingestionResponse.getProductGgroup());
+        assertNotNull(ingestionResponse.getProductGroup());
         verify(productIngestionService).ingestPull(any());
     }
 
     @Test
     void testPushIngestion_Success() {
         Mono<PushIngestionRequest> requestMono = Mono.just(
-                new PushIngestionRequest().withProductGgroup(new ProductGroup()));
+                new PushIngestionRequest().withProductGroup(new ProductGroup()));
 
         doAnswer(invocation -> {
             Mono mono = invocation.getArgument(0);
@@ -79,7 +79,7 @@ class ProductControllerTest {
         ResponseEntity<IngestionResponse> responseEntity = controller.pushIngestProductGroup(requestMono, null).block();
         IngestionResponse ingestionResponse = responseEntity.getBody();
         assertNotNull(ingestionResponse);
-        assertNotNull(ingestionResponse.getProductGgroup());
+        assertNotNull(ingestionResponse.getProductGroup());
         verify(productIngestionService).ingestPush(any());
     }
 }

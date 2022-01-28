@@ -88,9 +88,9 @@ components:
       type: object
       properties:
         userExternalId:
-          type: String
+          type: string
         productGroup:
-          $ref: '../../../../../../../api/stream-legal-entity/openapi.yaml#/components/schemas/ProductGroup'
+          $ref: '#/components/schemas/ProductGroup'
         additionalParameters:
           type: object
           additionalProperties:
@@ -120,3 +120,98 @@ components:
         message:
           type: string
 
+    ProductGroup:
+      type: object
+      description: "Products assigned to service agreement"
+      allOf:
+        - $ref: '#/components/schemas/BaseProductGroup'
+
+    BatchProductGroup:
+      type: object
+      description: "Product groups assigned to the users within same legal entity"
+      properties:
+        productGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/BaseProductGroup'
+
+    BaseProductGroup:
+      type: object
+      description: "Product groups assigned to the users within same legal entity"
+      properties:
+        currentAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrentAccount'
+        savingAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SavingsAccount'
+        debitCards:
+          type: array
+          items:
+            $ref: '#/components/schemas/DebitCard'
+        creditCards:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditCard'
+        loans:
+          type: array
+          items:
+            $ref: '#/components/schemas/Loan'
+        termDeposits:
+          type: array
+          items:
+            $ref: '#/components/schemas/TermDeposit'
+        investmentAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvestmentAccount'
+
+    BaseProduct:
+      title: Base Product
+      description: |
+        The Base product holds all common properties between different product types
+      type: object
+      properties:
+        externalId:
+          minLength: 1
+          maxLength: 50
+          type: string
+          description: A unique identifier for the product coming from the core banking system.
+        internalId:
+          minLength: 1
+          maxLength: 50
+          type: string
+          description: A unique identifier for the product coming from the core banking system.
+        productTypeExternalId:
+            title: External ID of the Product Type as setup in Product Summary
+            maxLength: 64
+            minLength: 1
+            pattern: ^[^\r\n]{1,64}$
+            type: string
+
+    CurrentAccount:
+      allOf:
+      - $ref: '#/components/schemas/BaseProduct'
+    SavingsAccount:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    DebitCard:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    CreditCard:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    Loan:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    TermDeposit:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    InvestmentAccount:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/BaseProduct'
