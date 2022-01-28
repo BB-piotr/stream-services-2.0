@@ -1,14 +1,15 @@
 package com.backbase.stream.compositions.transaction.http;
 
+import com.backbase.stream.compositions.integration.transaction.model.PullIngestionRequest;
 import com.backbase.stream.compositions.transaction.api.TransactionCompositionApi;
 import com.backbase.stream.compositions.transaction.core.mapper.TransactionMapper;
 import com.backbase.stream.compositions.transaction.core.model.TransactionIngestPullRequest;
 import com.backbase.stream.compositions.transaction.core.model.TransactionIngestPushRequest;
 import com.backbase.stream.compositions.transaction.core.model.TransactionIngestResponse;
 import com.backbase.stream.compositions.transaction.core.service.TransactionIngestionService;
-import com.backbase.stream.compositions.transaction.model.IngestionResponse;
-import com.backbase.stream.compositions.transaction.model.PullIngestionRequest;
-import com.backbase.stream.compositions.transaction.model.PushIngestionRequest;
+import com.backbase.stream.compositions.transaction.model.TransactionIngestionResponse;
+import com.backbase.stream.compositions.transaction.model.TransactionPullIngestionRequest;
+import com.backbase.stream.compositions.transaction.model.TransactionPushIngestionRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class TransactionController implements TransactionCompositionApi {
      * {@inheritDoc}
      */
     @Override
-    public Mono<ResponseEntity<IngestionResponse>> pullIngestTransactions(
-            @Valid Mono<PullIngestionRequest> pullIngestionRequest, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<TransactionIngestionResponse>> pullIngestTransactions(
+            @Valid Mono<TransactionPullIngestionRequest> pullIngestionRequest, ServerWebExchange exchange) {
         return transactionIngestionService
                 .ingestPull(pullIngestionRequest.map(this::buildPullRequest))
                 .map(this::mapIngestionToResponse);
@@ -40,8 +41,8 @@ public class TransactionController implements TransactionCompositionApi {
      * {@inheritDoc}
      */
     @Override
-    public Mono<ResponseEntity<IngestionResponse>> pushIngestTransactions(
-            @Valid Mono<PushIngestionRequest> pushIngestionRequest, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<TransactionIngestionResponse>> pushIngestTransactions(
+            @Valid Mono<TransactionPushIngestionRequest> pushIngestionRequest, ServerWebExchange exchange) {
         return transactionIngestionService
                 .ingestPush(pushIngestionRequest.map(this::buildPushRequest))
                 .map(this::mapIngestionToResponse);
@@ -53,7 +54,7 @@ public class TransactionController implements TransactionCompositionApi {
      * @param request PullIngestionRequest
      * @return ProductIngestPullRequest
      */
-    private TransactionIngestPullRequest buildPullRequest(PullIngestionRequest request) {
+    private TransactionIngestPullRequest buildPullRequest(TransactionPullIngestionRequest request) {
         return TransactionIngestPullRequest
                 .builder()
                 .userExternalId(request.getUserExternalId())
@@ -68,7 +69,7 @@ public class TransactionController implements TransactionCompositionApi {
      * @param request PushIngestionRequest
      * @return ProductIngestPushRequest
      */
-    private TransactionIngestPushRequest buildPushRequest(PushIngestionRequest request) {
+    private TransactionIngestPushRequest buildPushRequest(TransactionPushIngestionRequest request) {
         return TransactionIngestPushRequest.builder()
                 .transactions(
                         request.getTransactions().stream().map(item -> mapper.mapCompositionToStream(item)).collect(Collectors.toList()))
@@ -81,9 +82,9 @@ public class TransactionController implements TransactionCompositionApi {
      * @param response ProductCatalogIngestResponse
      * @return IngestionResponse
      */
-    private ResponseEntity<IngestionResponse> mapIngestionToResponse(TransactionIngestResponse response) {
+    private ResponseEntity<TransactionIngestionResponse> mapIngestionToResponse(TransactionIngestResponse response) {
         return new ResponseEntity<>(
-                new IngestionResponse()
+                new TransactionIngestionResponse()
                         .withTransactions(
                                 response.getTransactions().stream().map(item -> mapper.mapStreamToComposition(item)).collect(Collectors.toList())),
                 HttpStatus.CREATED);
