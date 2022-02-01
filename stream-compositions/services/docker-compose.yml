@@ -6,11 +6,11 @@ services:
   legal-entity-composition:
     container_name: wsecu_bb_legal_entity_composition
     image: harbor.backbase.eu/development/legal-entity-composition-service:latest
-    ports:
-      - "7081:8080"
-      - "5581:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:7081:8080"
+      - "127.0.0.1:5581:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -23,15 +23,17 @@ services:
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_INSTANCE_INSTANCE_HOSTNAME=legal-entity-composition
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
+    extra_hosts:
+      - "host.docker.internal:51.77.56.100"
 
   product-catalog-composition:
     container_name: wsecu_bb_product_catalog_composition
     image: harbor.backbase.eu/development/product-catalog-composition-service:latest
-    ports:
-      - "7082:8080"
-      - "5582:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:7082:8080"
+      - "127.0.0.1:5582:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -44,15 +46,17 @@ services:
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_INSTANCE_INSTANCE_HOSTNAME=product-catalog-composition
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
+    extra_hosts:
+    - "host.docker.internal:51.77.56.100"
 
   product-composition:
     container_name: wsecu_bb_product_composition
     image: harbor.backbase.eu/development/product-composition-service:latest
-    ports:
-      - "7083:8080"
-      - "5583:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:7083:8080"
+      - "127.0.0.1:5583:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -65,15 +69,17 @@ services:
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_INSTANCE_INSTANCE_HOSTNAME=product-composition
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
+    extra_hosts:
+      - "host.docker.internal:51.77.56.100"
 
   transaction-composition:
     container_name: wsecu_bb_transaction_composition
     image: harbor.backbase.eu/development/transaction-composition-service:latest
-    ports:
-      - "7084:8080"
-      - "5584:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:7084:8080"
+      - "127.0.0.1:5584:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -86,15 +92,17 @@ services:
       - EUREKA_INSTANCE_PREFER-IP-ADDRESS=true
       - EUREKA_INSTANCE_INSTANCE_HOSTNAME=transaction-composition
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
+    extra_hosts:
+      - "host.docker.internal:51.77.56.100"
 
   legal-entity-ingestion-integration:
     container_name: wsecu_bb_legal_entity_integration
     image: harbor.backbase.eu/development/wsecu-legal-entity-integration-service
-    ports:
-      - "9091:8080"
-      - "5591:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:9091:8080"
+      - "127.0.0.1:5591:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -110,12 +118,12 @@ services:
 
   product-catalog-ingestion-integration:
     container_name: wsecu_bb_product_catalog_integration
-    image: harbor.backbase.eu/development/wsecu-product-catalog-ingestion-integration-service
-    ports:
-      - "9092:8080"
-      - "5592:5555"
+    image: harbor.backbase.eu/development/wsecu-product-catalog-integration-service
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:9092:8080"
+      - "127.0.0.1:5592:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -131,12 +139,12 @@ services:
 
   product-ingestion-integration:
     container_name: wsecu_bb_product_integration
-    image: harbor.backbase.eu/development/wsecu-product-ingestion-integration-service
-    ports:
-      - "9093:8080"
-      - "5593:5555"
+    image: harbor.backbase.eu/development/wsecu-product-integration-service
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:9093:8080"
+      - "127.0.0.1:5593:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -153,11 +161,11 @@ services:
   transaction-ingestion-integration:
     container_name: wsecu_bb_transaction_integration
     image: harbor.backbase.eu/development/wsecu-transaction-integration-service
-    ports:
-      - "9094:8080"
-      - "5594:5555"
     networks:
       - wsecu_bb_local
+    ports:
+      - "127.0.0.1:9094:8080"
+      - "127.0.0.1:5594:5555"
     environment:
       - JAVA_TOOL_OPTIONS= -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555 -Deureka.client.serviceUrl.defaultZone=http://registry:8080/eureka/
       - SPRING_ACTIVEMQ_BROKER-URL=tcp://activemq:61616
@@ -174,5 +182,3 @@ services:
 networks:
   wsecu_bb_local:
     external: true
-
-

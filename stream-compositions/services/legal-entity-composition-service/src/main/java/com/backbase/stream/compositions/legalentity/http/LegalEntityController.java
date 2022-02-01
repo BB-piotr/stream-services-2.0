@@ -1,17 +1,21 @@
 package com.backbase.stream.compositions.legalentity.http;
 
 import com.backbase.stream.compositions.legalentity.api.LegalEntityCompositionApi;
+import com.backbase.stream.compositions.legalentity.core.exception.LegalEntityCompositionException;
 import com.backbase.stream.compositions.legalentity.core.mapper.LegalEntityMapper;
 import com.backbase.stream.compositions.legalentity.core.model.LegalEntityIngestPullRequest;
 import com.backbase.stream.compositions.legalentity.core.model.LegalEntityIngestPushRequest;
 import com.backbase.stream.compositions.legalentity.core.model.LegalEntityIngestResponse;
 import com.backbase.stream.compositions.legalentity.core.service.LegalEntityIngestionService;
+import com.backbase.stream.compositions.legalentity.model.InternalServerError;
 import com.backbase.stream.compositions.legalentity.model.LegalEntityIngestionResponse;
 import com.backbase.stream.compositions.legalentity.model.LegalEntityPullIngestionRequest;
 import com.backbase.stream.compositions.legalentity.model.LegalEntityPushIngestionRequest;
+import com.nimbusds.oauth2.sdk.ErrorResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -84,5 +88,10 @@ public class LegalEntityController implements LegalEntityCompositionApi {
                 new LegalEntityIngestionResponse()
                         .withLegalEntity(mapper.mapStreamToComposition(response.getLegalEntity())),
                 HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler({LegalEntityCompositionException.class})
+    private InternalServerError handleException(LegalEntityCompositionException ex) {
+        return new InternalServerError().withMessage(ex.getMessage());
     }
 }
