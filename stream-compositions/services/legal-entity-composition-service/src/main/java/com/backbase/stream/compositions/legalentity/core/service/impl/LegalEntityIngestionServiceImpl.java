@@ -29,9 +29,12 @@ public class LegalEntityIngestionServiceImpl implements LegalEntityIngestionServ
         return ingestPullRequest
                 .map(this::pullLegalEntity)
                 .flatMap(this::sendToDbs)
-                .doOnSuccess(this::handleSuccess)
+                .onErrorContinue((e, i) -> {
+                    System.out.println("Value '" + i + "' have triggered an error " + e);
+                })
                 .map(this::buildResponse);
     }
+
 
     /**
      * {@inheritDoc}

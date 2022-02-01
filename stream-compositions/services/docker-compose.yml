@@ -88,6 +88,7 @@ services:
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
 
   legal-entity-ingestion-integration:
+    restart: always
     container_name: wsecu_bb_legal_entity_integration
     image: harbor.backbase.eu/development/wsecu-legal-entity-integration-service
     ports:
@@ -109,6 +110,7 @@ services:
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
 
   product-catalog-ingestion-integration:
+    restart: always
     container_name: wsecu_bb_product_catalog_integration
     image: harbor.backbase.eu/development/wsecu-product-catalog-ingestion-integration-service
     ports:
@@ -130,8 +132,9 @@ services:
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
 
   product-ingestion-integration:
+    restart: always
     container_name: wsecu_bb_product_integration
-    image: harbor.backbase.eu/development/wsecu-product-ingestion-integration-service
+    image: harbor.backbase.eu/development/wsecu-product-integration-service
     ports:
       - "9093:8080"
       - "5593:5555"
@@ -151,6 +154,7 @@ services:
       - EUREKA_INSTANCE_NON-SECURE-PORT=8080
 
   transaction-ingestion-integration:
+    restart: always
     container_name: wsecu_bb_transaction_integration
     image: harbor.backbase.eu/development/wsecu-transaction-integration-service
     ports:
