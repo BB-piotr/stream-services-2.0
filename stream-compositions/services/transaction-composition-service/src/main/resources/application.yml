@@ -15,6 +15,8 @@ spring:
             token-uri: http://token-converter:8080/oauth/token
   main:
     allow-bean-definition-overriding: true
+  codec:
+    max-in-memory-size: 10MB
 sso:
   jwt:
     internal:
