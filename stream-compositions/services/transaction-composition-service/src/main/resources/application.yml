@@ -50,7 +50,7 @@ backbase:
       transaction:
         enable-completed-events: false
         enable-failed-events: true
-        transaction-integration-url:  http://host.docker.internal:20004
+        transaction-integration-url:  http://wsecu-transaction-integration-service-nextgen:8080
 
 logging:
   level:

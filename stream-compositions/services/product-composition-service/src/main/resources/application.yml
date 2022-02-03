@@ -48,7 +48,7 @@ backbase:
       product:
         enable-completed-events: false
         enable-failed-events: true
-        product-integration-url: http://host.docker.internal:20003
+        product-integration-url: http://wsecu-product-integration-service-nextgen:8080
 
 logging:
   level:

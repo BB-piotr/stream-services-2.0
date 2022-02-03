@@ -38,7 +38,7 @@ backbase:
       product-catalog:
         enable-completed-events: false
         enable-failed-events: true
-        product-catalog-integration-url: http://host.docker.internal:20002
+        product-catalog-integration-url: http://wsecu-product-catalog-integration-service-nextgen:8080
 
 bootstrap:
   enabled: false
