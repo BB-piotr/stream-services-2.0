@@ -576,7 +576,8 @@ public class AccessGroupService {
                         .collect(Collectors.toList());
 
         return Mono.just(presentationAssignUserPermissions)
-                .flatMap(permisions -> accessControlUsersApi.putAssignUserPermissions(permisions).collectList())
+                .flatMap(permissions -> accessControlUsersApi.putAssignUserPermissions(permissions).collectList())
+                .doOnNext((result) -> log.info("Cleared users permissions: {}", result))
                 .thenReturn(legalEntity);
     }
 
