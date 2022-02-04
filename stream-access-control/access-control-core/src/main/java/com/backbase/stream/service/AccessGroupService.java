@@ -581,6 +581,20 @@ public class AccessGroupService {
                 .thenReturn(legalEntity);
     }
 
+    public Mono<LegalEntity> deleteFunctionGroups(LegalEntity legalEntity) {
+        final List<String> functionGroupNames = legalEntity.getUsers().stream()
+                .flatMap(jobProfileUser -> jobProfileUser.getBusinessFunctionGroups().stream().map(functionGroup -> functionGroup.getName()))
+                .collect(Collectors.toList());
+
+        return serviceAgreementApi
+                .getServiceAgreementExternalId(legalEntity.getMasterServiceAgreement().getExternalId())
+                .map(serviceAgreementItem -> serviceAgreementItem.getId())
+                .map(saId -> functionGroupApi.getFunctionGroups(saId)
+                        .filter(functionGroupItem -> functionGroupNames.contains(functionGroupItem.getName()))
+                        .flatMap(functionGroupItem -> functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId())))
+                .thenReturn(legalEntity);
+    }
+
     /**
      * Retrieves function groups by service agreement id, filter any non-system and convert resulting list into a set of ids.
      */
