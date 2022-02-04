@@ -595,7 +595,7 @@ public class AccessGroupService {
                         })
                         .flatMap(functionGroupItem -> {
                             return functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId());
-                        }))
+                        }).collectList())
                         .
 
                 thenReturn(legalEntity);
