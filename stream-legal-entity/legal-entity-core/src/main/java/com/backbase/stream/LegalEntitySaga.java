@@ -116,6 +116,7 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
     public Mono<LegalEntityTask> executeTask(@SpanTag(value = "streamTask") LegalEntityTask streamTask) {
         return upsertLegalEntity(streamTask)
                 .flatMap(this::setupAdministrators)
+                .flatMap(this::clearUsersPermissions)
                 .flatMap(this::setupUsers)
                 .flatMap(this::setupServiceAgreement)
                 .flatMap(this::createJobRoles)
@@ -126,11 +127,18 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
                 .flatMap(this::processSubsidiaries);
     }
 
+    private Mono<LegalEntityTask> clearUsersPermissions(LegalEntityTask streamTask) {
+        return Mono.just(streamTask)
+                .flatMap(task -> accessGroupService.clearUsersPermissions(task.getLegalEntity()))
+                .thenReturn(streamTask);
+    }
+
     @Override
     public Mono<LegalEntityTask> rollBack(LegalEntityTask streamTask) {
         // GET CREATED AND EVENTS AND CALL DELETE ENDPOINTS IN REVERSE
         return Mono.just(streamTask);
     }
+
 
     /**
      * Delete Legal Entity by provided Legal Entity external ID.
@@ -436,7 +444,7 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
         log.trace("Permissions {}", request);
         return accessGroupService.assignPermissionsBatch(
                         new BatchProductGroupTask(BATCH_PRODUCT_GROUP_ID + System.currentTimeMillis(), new BatchProductGroup()
-                                .serviceAgreement(retrieveServiceAgreement(legalEntity)), BatchProductGroupTask.IngestionMode.REPLACE), request)
+                                .serviceAgreement(retrieveServiceAgreement(legalEntity)), BatchProductGroupTask.IngestionMode.UPDATE), request)
                 .thenReturn(legalEntityTask);
 
     }
