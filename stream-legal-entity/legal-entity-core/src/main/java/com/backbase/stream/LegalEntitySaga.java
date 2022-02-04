@@ -136,7 +136,7 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
 
     private Mono<LegalEntityTask> deleteFunctionGroups(LegalEntityTask streamTask) {
         return Mono.just(streamTask)
-                .flatMap(task -> accessGroupService.clearUsersPermissions(task.getLegalEntity()))
+                .flatMap(task -> accessGroupService.deleteFunctionGroups(task.getLegalEntity()))
                 .thenReturn(streamTask);
     }
 
