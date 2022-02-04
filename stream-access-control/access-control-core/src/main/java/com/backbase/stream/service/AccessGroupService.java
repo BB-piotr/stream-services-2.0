@@ -590,9 +590,16 @@ public class AccessGroupService {
                 .getServiceAgreementExternalId(legalEntity.getMasterServiceAgreement().getExternalId())
                 .map(serviceAgreementItem -> serviceAgreementItem.getId())
                 .map(saId -> functionGroupApi.getFunctionGroups(saId)
-                        .filter(functionGroupItem -> functionGroupNames.contains(functionGroupItem.getName()))
-                        .flatMap(functionGroupItem -> functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId())))
-                .thenReturn(legalEntity);
+                        .filter(functionGroupItem -> {
+                            return functionGroupNames.contains(functionGroupItem.getName());
+                        })
+                        .flatMap(functionGroupItem -> {
+                            return functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId());
+                        }))
+                        .
+
+                thenReturn(legalEntity);
+
     }
 
     /**
