@@ -566,7 +566,7 @@ public class AccessGroupService {
     public Mono<LegalEntity> clearUsersPermissions(LegalEntity legalEntity) {
 
         List<JobProfileUser> users = legalEntity.getUsers();
-        ServiceAgreement serviceAgreement = legalEntity.getCustomServiceAgreement();
+        ServiceAgreement serviceAgreement = legalEntity.getMasterServiceAgreement();
 
         List<PresentationAssignUserPermissions> presentationAssignUserPermissions =
                 users.stream()
