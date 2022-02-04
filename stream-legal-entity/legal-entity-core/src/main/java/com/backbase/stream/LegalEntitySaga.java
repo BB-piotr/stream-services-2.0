@@ -436,7 +436,7 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
         log.trace("Permissions {}", request);
         return accessGroupService.assignPermissionsBatch(
                         new BatchProductGroupTask(BATCH_PRODUCT_GROUP_ID + System.currentTimeMillis(), new BatchProductGroup()
-                                .serviceAgreement(retrieveServiceAgreement(legalEntity)), BatchProductGroupTask.IngestionMode.UPDATE), request)
+                                .serviceAgreement(retrieveServiceAgreement(legalEntity)), BatchProductGroupTask.IngestionMode.REPLACE), request)
                 .thenReturn(legalEntityTask);
 
     }
