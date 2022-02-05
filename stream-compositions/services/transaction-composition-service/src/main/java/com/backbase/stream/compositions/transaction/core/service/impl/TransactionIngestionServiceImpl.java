@@ -70,10 +70,7 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
      * @return Ingested transactions
      */
     private Mono<List<TransactionsPostResponseBody>> sendToDbs(Flux<TransactionsPostRequestBody> transactions) {
-        return transactionService.processTransactions(
-                        transactions
-                                .buffer(100)
-                                .dematerialize())
+        return transactionService.processTransactions(transactions)
                 .flatMapIterable(UnitOfWork::getStreamTasks)
                 .flatMapIterable(TransactionTask::getResponse)
                 .collectList();
