@@ -588,7 +588,9 @@ public class AccessGroupService {
 
         return serviceAgreementApi
                 .getServiceAgreementExternalId(legalEntity.getMasterServiceAgreement().getExternalId())
-                .onErrorContinue((e, o) -> log.warn("Error when deleting function groups: {}", e.getMessage()))
+                .onErrorContinue(WebClientResponseException.class, (throwable, o) -> {
+                    log.error("Error when deleting function groups");
+                })
                 .map(serviceAgreementItem -> serviceAgreementItem.getId())
                 .map(saId -> functionGroupApi.getFunctionGroups(saId)
                         .filter(functionGroupItem -> functionGroupNames.contains(functionGroupItem.getName()))
