@@ -116,8 +116,8 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
     public Mono<LegalEntityTask> executeTask(@SpanTag(value = "streamTask") LegalEntityTask streamTask) {
         return upsertLegalEntity(streamTask)
                 .flatMap(this::setupAdministrators)
-                .flatMap(this::clearUsersPermissions)
-                .flatMap(this::deleteFunctionGroups)
+//                .flatMap(this::clearUsersPermissions)
+//                .flatMap(this::deleteFunctionGroups)
                 .flatMap(this::setupUsers)
                 .flatMap(this::setupServiceAgreement)
                 .flatMap(this::createJobRoles)
