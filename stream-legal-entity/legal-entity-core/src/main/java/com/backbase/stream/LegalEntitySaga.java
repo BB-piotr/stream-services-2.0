@@ -116,8 +116,8 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
     public Mono<LegalEntityTask> executeTask(@SpanTag(value = "streamTask") LegalEntityTask streamTask) {
         return upsertLegalEntity(streamTask)
                 .flatMap(this::setupAdministrators)
-//                .flatMap(this::clearUsersPermissions)
-//                .flatMap(this::deleteFunctionGroups)
+                .flatMap(this::clearUsersPermissions)
+                .flatMap(this::deleteFunctionGroups)
                 .flatMap(this::setupUsers)
                 .flatMap(this::setupServiceAgreement)
                 .flatMap(this::createJobRoles)
@@ -129,15 +129,18 @@ public class LegalEntitySaga implements StreamTaskExecutor<LegalEntityTask> {
     }
 
     private Mono<LegalEntityTask> clearUsersPermissions(LegalEntityTask streamTask) {
-        return Mono.just(streamTask)
-                .flatMap(task -> accessGroupService.clearUsersPermissions(task.getLegalEntity()))
-                .thenReturn(streamTask);
+        return Mono.just(streamTask);
+//        return Mono.just(streamTask)
+//                .flatMap(task -> accessGroupService.clearUsersPermissions(task.getLegalEntity()))
+//                .thenReturn(streamTask);
     }
 
     private Mono<LegalEntityTask> deleteFunctionGroups(LegalEntityTask streamTask) {
-        return Mono.just(streamTask)
-                .flatMap(task -> accessGroupService.deleteFunctionGroups(task.getLegalEntity()))
-                .thenReturn(streamTask);
+        return Mono.just(streamTask);
+
+//        return Mono.just(streamTask)
+//                .flatMap(task -> accessGroupService.deleteFunctionGroups(task.getLegalEntity()))
+//                .thenReturn(streamTask);
     }
 
     @Override
