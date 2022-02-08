@@ -592,6 +592,7 @@ public class AccessGroupService {
                 .map(saId -> functionGroupApi.getFunctionGroups(saId)
                         .filter(functionGroupItem -> functionGroupNames.contains(functionGroupItem.getName()))
                         .flatMap(functionGroupItem -> functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId())).collectList())
+                .onErrorContinue((e, o) -> log.warn("Error when deleting function groups: {}", e.getMessage()))
                 .thenReturn(legalEntity);
     }
 
