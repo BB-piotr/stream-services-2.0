@@ -588,11 +588,12 @@ public class AccessGroupService {
 
         return serviceAgreementApi
                 .getServiceAgreementExternalId(legalEntity.getMasterServiceAgreement().getExternalId())
+                .onErrorContinue((e, o) -> log.warn("Error when deleting function groups: {}", e.getMessage()))
                 .map(serviceAgreementItem -> serviceAgreementItem.getId())
                 .map(saId -> functionGroupApi.getFunctionGroups(saId)
                         .filter(functionGroupItem -> functionGroupNames.contains(functionGroupItem.getName()))
                         .flatMap(functionGroupItem -> functionGroupsApi.deleteFunctionGroupById(functionGroupItem.getId())).collectList())
-                .onErrorContinue((e, o) -> log.warn("Error when deleting function groups: {}", e.getMessage()))
+
                 .thenReturn(legalEntity);
     }
 
