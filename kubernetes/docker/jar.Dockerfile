@@ -12,8 +12,8 @@ ENV OPTS="-XX:+UseConcMarkSweepGC \
     -agentlib:jdwp=transport=dt_socket,address=5009,server=y,suspend=n \
     -XX:+CMSClassUnloadingEnabled \
     -Dspring.cloud.kubernetes.enabled=false \
-    -javaagent:/ext/elastic-apm-agent-1.20.0.jar \
-    -javaagent:/ext/jmx_prometheus_javaagent-0.15.0.jar=8687:prom_config.yaml \
+    -javaagent:/ext/elastic-apm-agent-1.28.1.jar \
+    -javaagent:/ext/jmx_prometheus_javaagent-0.16.1.jar=8687:prom_config.yaml \
     -Xms1024m \
     -Xmx4096m \
     -Dcom.sun.management.jmxremote \
@@ -47,7 +47,7 @@ ARG CAPABILITY
 ARG APPLICATION_CONFIG
 ARG LOGBACK_SPRING_CONFIG=kubernetes/docker/base/logback-spring.xml
 
-RUN mkdir /ext
+RUN mkdir ext
 COPY kubernetes/docker/mssql-jdbc-9.4.0.jre11.jar /usr/src/app/lib/sqljdbc.jar
 
 COPY ${APPLICATION_CONFIG}/application.yml /usr/src/app/application.yml
@@ -57,8 +57,8 @@ COPY kubernetes/docker/certs /opt/certs
 RUN mkdir -p $JAVA_HOME/lib/security
 COPY kubernetes/docker/base/jce $JAVA_HOME/lib/security
 
-RUN cd /ext && curl -LO http://oly-k8srepo-51/devops/elastic-apm/elastic-apm-agent-1.20.0.jar
-RUN cd /ext && curl -LO http://oly-k8srepo-51/devops/prometheus-jmx/jmx_prometheus_javaagent-0.15.0.jar
+RUN cd /ext && curl -LO https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.28.1/elastic-apm-agent-1.28.1.jar
+RUN cd /ext && curl -LO https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar
 COPY kubernetes/docker/prom_config.yaml /usr/src/app
 
 COPY ${CAPABILITY}.jar /usr/src/app/app.jar
