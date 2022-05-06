@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -70,10 +74,24 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
      * @return Ingested transactions
      */
     private Mono<List<TransactionsPostResponseBody>> sendToDbs(Flux<TransactionsPostRequestBody> transactions) {
-        return transactionService.processTransactions(transactions)
-                .flatMapIterable(UnitOfWork::getStreamTasks)
-                .flatMapIterable(TransactionTask::getResponse)
-                .collectList();
+        List<TransactionsPostResponseBody> response = new ArrayList<TransactionsPostResponseBody>();
+        List<TransactionsPostRequestBody> transactionslist = transactions.collectList().block();
+        int partitionSize = 20;
+
+        Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionslist.size())
+                .boxed()
+                .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionslist.get(elementIndex), Collectors.toList())))
+                .values();
+
+        for (Collection<List<TransactionsPostRequestBody>> trx : partitionedList ) {
+            List<TransactionsPostResponseBody> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
+                    .flatMapIterable(UnitOfWork::getStreamTasks)
+                    .flatMapIterable(TransactionTask::getResponse)
+                    .collectList();
+            response.addAll(responseBodies);
+        }
+
+        return Mono.just(response);
     }
 
     private TransactionIngestResponse buildResponse(List<TransactionsPostResponseBody> transactions) {
