@@ -87,7 +87,8 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
             List<TransactionsPostResponseBody> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
                     .flatMapIterable(UnitOfWork::getStreamTasks)
                     .flatMapIterable(TransactionTask::getResponse)
-                    .collectList();
+                    .collectList()
+                    .block();
             response.addAll(responseBodies);
         }
 
