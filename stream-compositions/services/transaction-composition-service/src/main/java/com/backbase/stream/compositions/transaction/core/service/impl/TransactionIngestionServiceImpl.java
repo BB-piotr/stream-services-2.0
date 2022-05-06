@@ -83,7 +83,7 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
                 .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionslist.get(elementIndex), Collectors.toList())))
                 .values();
 
-        for (Collection<List<TransactionsPostRequestBody>> trx : partitionedList ) {
+        for (List<TransactionsPostRequestBody> trx : partitionedList ) {
             List<TransactionsPostResponseBody> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
                     .flatMapIterable(UnitOfWork::getStreamTasks)
                     .flatMapIterable(TransactionTask::getResponse)
