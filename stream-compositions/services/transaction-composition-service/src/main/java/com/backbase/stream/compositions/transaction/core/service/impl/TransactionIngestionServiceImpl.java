@@ -76,7 +76,9 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
     private Mono<List<TransactionsPostResponseBody>> sendToDbs(Flux<TransactionsPostRequestBody> transactions) {
         Mono<List<TransactionsPostResponseBody>> response = Mono.just(new ArrayList<>());
         List<TransactionsPostRequestBody> transactionsList = new ArrayList<>();
-        transactions.collectList().subscribe(transactionsList::addAll);
+        //transactions.collectList().subscribe(transactionsList::addAll);
+
+        transactions.collectList().subscribe((t) -> log.info("List size: " + t.size()));
         int partitionSize = 20;
 
         try {
