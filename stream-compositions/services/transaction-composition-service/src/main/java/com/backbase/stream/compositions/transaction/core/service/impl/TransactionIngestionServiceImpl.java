@@ -85,11 +85,10 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
                 .values();
 
         for (List<TransactionsPostRequestBody> trx : partitionedList ) {
-            Mono<List<TransactionsPostResponseBody>> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
+          transactionService.processTransactions(Flux.fromIterable(trx))
                     .flatMapIterable(UnitOfWork::getStreamTasks)
                     .flatMapIterable(TransactionTask::getResponse)
-                    .collectList();
-
+                    .subscribe();
         }
 
         return Mono.empty();
