@@ -84,11 +84,18 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
                 .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionsList.get(elementIndex), Collectors.toList())))
                 .values();
 
-        for (List<TransactionsPostRequestBody> trx : partitionedList ) {
-          transactionService.processTransactions(Flux.fromIterable(trx))
+        for (List<TransactionsPostRequestBody> trx : partitionedList) {
+            log.debug("Ingested transactions loop: {}", trx.size());
+            transactionService.processTransactions(Flux.fromIterable(trx))
                     .flatMapIterable(UnitOfWork::getStreamTasks)
                     .flatMapIterable(TransactionTask::getResponse)
-                    .subscribe();
+                    .subscribe((t) -> log.info("Subscription fired"));
+        }
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         return Mono.empty();
