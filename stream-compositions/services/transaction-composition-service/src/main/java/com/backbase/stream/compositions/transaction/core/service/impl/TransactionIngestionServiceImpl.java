@@ -74,25 +74,24 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
      * @return Ingested transactions
      */
     private Mono<List<TransactionsPostResponseBody>> sendToDbs(Flux<TransactionsPostRequestBody> transactions) {
-        List<TransactionsPostResponseBody> response = new ArrayList<TransactionsPostResponseBody>();
-        List<TransactionsPostRequestBody> transactionslist = transactions.collectList().block();
+        Mono<List<TransactionsPostResponseBody>> response = Mono.just(new ArrayList<>());
+        List<TransactionsPostRequestBody> transactionsList = transactions.collectList().block();
         int partitionSize = 20;
 
-        Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionslist.size())
+        Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
                 .boxed()
-                .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionslist.get(elementIndex), Collectors.toList())))
+                .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionsList.get(elementIndex), Collectors.toList())))
                 .values();
 
         for (List<TransactionsPostRequestBody> trx : partitionedList ) {
-            List<TransactionsPostResponseBody> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
+            Mono<List<TransactionsPostResponseBody>> responseBodies = transactionService.processTransactions(Flux.fromIterable(trx))
                     .flatMapIterable(UnitOfWork::getStreamTasks)
                     .flatMapIterable(TransactionTask::getResponse)
-                    .collectList()
-                    .block();
-            response.addAll(responseBodies);
+                    .collectList();
+
         }
 
-        return Mono.just(response);
+        return Mono.empty();
     }
 
     private TransactionIngestResponse buildResponse(List<TransactionsPostResponseBody> transactions) {
