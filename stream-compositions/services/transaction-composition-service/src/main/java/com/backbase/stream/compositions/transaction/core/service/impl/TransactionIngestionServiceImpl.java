@@ -79,6 +79,8 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
         transactions.collectList().subscribe(transactionsList::addAll);
         int partitionSize = 20;
 
+        log.debug("Ingested transactions loop: {}", transactionsList.size());
+
         Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
                 .boxed()
                 .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionsList.get(elementIndex), Collectors.toList())))
