@@ -95,7 +95,7 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
                         transactionService.processTransactions(Flux.fromIterable(trx))
                                 .flatMapIterable(UnitOfWork::getStreamTasks)
                                 .flatMapIterable(TransactionTask::getResponse)
-                                .subscribe((t) -> log.info("Subscription fired"));
+                                .subscribe((t1) -> log.info("Subscription fired"));
                     }
                 }
         );
