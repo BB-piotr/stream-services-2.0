@@ -78,35 +78,28 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
         List<TransactionsPostRequestBody> transactionsList = new ArrayList<>();
         //transactions.collectList().subscribe(transactionsList::addAll);
 
-        transactions.collectList().subscribe((t) -> log.info("List size: " + t.size()));
-        int partitionSize = 20;
+        transactions.collectList().subscribe((t) -> {
+                    log.info("List size: " + t.size());
+                    transactionsList.addAll(t);
+                    int partitionSize = 20;
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+                    log.debug("Ingested transactions loop: {}", transactionsList.size());
 
-        log.debug("Ingested transactions loop: {}", transactionsList.size());
+                    Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
+                            .boxed()
+                            .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionsList.get(elementIndex), Collectors.toList())))
+                            .values();
 
-        Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
-                .boxed()
-                .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> transactionsList.get(elementIndex), Collectors.toList())))
-                .values();
+                    for (List<TransactionsPostRequestBody> trx : partitionedList) {
+                        log.debug("Ingested transactions loop: {}", trx.size());
+                        transactionService.processTransactions(Flux.fromIterable(trx))
+                                .flatMapIterable(UnitOfWork::getStreamTasks)
+                                .flatMapIterable(TransactionTask::getResponse)
+                                .subscribe((t) -> log.info("Subscription fired"));
+                    }
+                }
+        );
 
-        for (List<TransactionsPostRequestBody> trx : partitionedList) {
-            log.debug("Ingested transactions loop: {}", trx.size());
-            transactionService.processTransactions(Flux.fromIterable(trx))
-                    .flatMapIterable(UnitOfWork::getStreamTasks)
-                    .flatMapIterable(TransactionTask::getResponse)
-                    .subscribe((t) -> log.info("Subscription fired"));
-        }
-
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         return Mono.empty();
     }
