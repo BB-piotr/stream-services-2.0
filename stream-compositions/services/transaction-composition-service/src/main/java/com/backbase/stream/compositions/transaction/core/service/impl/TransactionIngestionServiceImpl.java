@@ -79,6 +79,12 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
         transactions.collectList().subscribe(transactionsList::addAll);
         int partitionSize = 20;
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         log.debug("Ingested transactions loop: {}", transactionsList.size());
 
         Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
