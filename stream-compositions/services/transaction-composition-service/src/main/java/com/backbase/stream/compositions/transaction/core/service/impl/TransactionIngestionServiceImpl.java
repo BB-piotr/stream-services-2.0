@@ -83,6 +83,9 @@ public class TransactionIngestionServiceImpl implements TransactionIngestionServ
                     transactionsList.addAll(t);
                     int partitionSize = 20;
 
+                    log.debug("Transaction: " + t.get(0).getExternalId());
+                    t.get(0).setBillingStatus("PENDING");
+
                     log.debug("Ingested transactions loop: {}", transactionsList.size());
 
                     Collection<List<TransactionsPostRequestBody>> partitionedList = IntStream.range(0, transactionsList.size())
